@@ -2,9 +2,11 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,8 +37,9 @@ const Navigation = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <motion.div
-            className="flex items-center space-x-3"
+            className="flex items-center space-x-3 cursor-pointer"
             whileHover={{ scale: 1.05 }}
+            onClick={() => navigate('/')}
           >
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-cyber-blue to-cyber-purple neural-glow" />
             <span className="text-xl font-bold text-white">MetaMind</span>
@@ -67,7 +70,10 @@ const Navigation = () => {
             >
               Connect Wallet
             </Button>
-            <Button className="bg-gradient-to-r from-cyber-blue to-cyber-purple hover:from-cyber-purple hover:to-cyber-pink text-white">
+            <Button 
+              className="bg-gradient-to-r from-cyber-blue to-cyber-purple hover:from-cyber-purple hover:to-cyber-pink text-white"
+              onClick={() => navigate('/dashboard')}
+            >
               Launch App
             </Button>
           </div>
