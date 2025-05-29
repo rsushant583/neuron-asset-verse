@@ -34,7 +34,6 @@ function CreatorCard({ position, creator, onClick }: any) {
         color="white"
         anchorX="center"
         anchorY="middle"
-        font="/fonts/inter-bold.woff"
       >
         {creator.name}
       </Text>
