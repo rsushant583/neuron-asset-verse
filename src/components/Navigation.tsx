@@ -18,6 +18,7 @@ const Navigation = () => {
   }, []);
 
   const navItems = [
+    { label: 'Explorer', href: '/explorer' },
     { label: 'Market', href: '#market' },
     { label: 'Create', href: '#create' },
     { label: 'Tokenomics', href: '#tokenomics' },
@@ -50,8 +51,9 @@ const Navigation = () => {
             {navItems.map((item, index) => (
               <motion.a
                 key={item.label}
-                href={item.href}
-                className="text-gray-300 hover:text-cyber-blue transition-colors duration-200 font-medium"
+                href={item.href.startsWith('/') ? undefined : item.href}
+                onClick={item.href.startsWith('/') ? () => navigate(item.href) : undefined}
+                className="text-gray-300 hover:text-cyber-blue transition-colors duration-200 font-medium cursor-pointer"
                 whileHover={{ y: -2 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
