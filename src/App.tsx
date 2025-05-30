@@ -8,6 +8,9 @@ import { useEffect, useState } from "react";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Explorer from "./pages/Explorer";
+import Market from "./pages/Market";
+import Create from "./pages/Create";
+import Community from "./pages/Community";
 import NotFound from "./pages/NotFound";
 import MobileNavigation from "./components/mobile/MobileNavigation";
 import PWAInstallPrompt from "./components/mobile/PWAInstallPrompt";
@@ -39,6 +42,9 @@ const App = () => {
               <Route path="/" element={<Index />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/explorer" element={<Explorer />} />
+              <Route path="/market" element={<Market />} />
+              <Route path="/create" element={<Create />} />
+              <Route path="/community" element={<Community />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

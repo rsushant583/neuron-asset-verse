@@ -12,8 +12,8 @@ const MobileNavigation = () => {
   const navItems = [
     { icon: Home, label: 'Home', path: '/', id: 'home' },
     { icon: Search, label: 'Explore', path: '/explorer', id: 'explore' },
-    { icon: Upload, label: 'Upload', path: '/dashboard', id: 'upload' },
-    { icon: Wallet, label: 'Wallet', path: '/dashboard', id: 'wallet' },
+    { icon: Upload, label: 'Create', path: '/create', id: 'create' },
+    { icon: Wallet, label: 'Market', path: '/market', id: 'market' },
     { icon: User, label: 'Profile', path: '/dashboard', id: 'profile' },
   ];
 

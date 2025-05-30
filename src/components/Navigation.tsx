@@ -19,11 +19,29 @@ const Navigation = () => {
 
   const navItems = [
     { label: 'Explorer', href: '/explorer' },
-    { label: 'Market', href: '#market' },
-    { label: 'Create', href: '#create' },
+    { label: 'Market', href: '/market' },
+    { label: 'Create', href: '/create' },
     { label: 'Tokenomics', href: '#tokenomics' },
-    { label: 'Community', href: '#community' }
+    { label: 'Community', href: '/community' }
   ];
+
+  const handleNavigation = (href: string) => {
+    if (href.startsWith('#')) {
+      // Handle hash navigation for sections on the homepage
+      if (window.location.pathname !== '/') {
+        navigate('/');
+        setTimeout(() => {
+          const element = document.querySelector(href);
+          element?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      } else {
+        const element = document.querySelector(href);
+        element?.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      navigate(href);
+    }
+  };
 
   return (
     <motion.nav
@@ -49,10 +67,9 @@ const Navigation = () => {
           {/* Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item, index) => (
-              <motion.a
+              <motion.button
                 key={item.label}
-                href={item.href.startsWith('/') ? undefined : item.href}
-                onClick={item.href.startsWith('/') ? () => navigate(item.href) : undefined}
+                onClick={() => handleNavigation(item.href)}
                 className="text-gray-300 hover:text-cyber-blue transition-colors duration-200 font-medium cursor-pointer"
                 whileHover={{ y: -2 }}
                 initial={{ opacity: 0, y: 20 }}
@@ -60,7 +77,7 @@ const Navigation = () => {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 {item.label}
-              </motion.a>
+              </motion.button>
             ))}
           </div>
 
