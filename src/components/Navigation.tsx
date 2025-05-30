@@ -3,10 +3,12 @@ import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,6 +43,18 @@ const Navigation = () => {
     } else {
       navigate(href);
     }
+  };
+
+  const handleConnectWallet = () => {
+    toast({
+      title: "Wallet Connection",
+      description: "Wallet connection feature coming soon! Currently in development.",
+      duration: 3000,
+    });
+  };
+
+  const handleLaunchApp = () => {
+    navigate('/dashboard');
   };
 
   return (
@@ -86,12 +100,13 @@ const Navigation = () => {
             <Button
               variant="outline"
               className="hidden sm:inline-flex glass-morphism border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/20"
+              onClick={handleConnectWallet}
             >
               Connect Wallet
             </Button>
             <Button 
               className="bg-gradient-to-r from-cyber-blue to-cyber-purple hover:from-cyber-purple hover:to-cyber-pink text-white"
-              onClick={() => navigate('/dashboard')}
+              onClick={handleLaunchApp}
             >
               Launch App
             </Button>

@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Home, Search, Upload, Wallet, User } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -8,6 +8,10 @@ const MobileNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.pathname);
+
+  useEffect(() => {
+    setActiveTab(location.pathname);
+  }, [location.pathname]);
 
   const navItems = [
     { icon: Home, label: 'Home', path: '/', id: 'home' },
@@ -29,12 +33,12 @@ const MobileNavigation = () => {
 
   return (
     <motion.div 
-      className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
+      className="fixed bottom-0 left-0 right-0 z-50 md:hidden safe-area-inset-bottom"
       initial={{ y: 100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="glass-morphism border-t border-white/10 px-2 py-2 backdrop-blur-xl bg-black/80">
+      <div className="glass-morphism border-t border-white/10 px-2 py-2 backdrop-blur-xl bg-black/90">
         <div className="flex justify-around items-center">
           {navItems.map((item) => {
             const isActive = activeTab === item.path;

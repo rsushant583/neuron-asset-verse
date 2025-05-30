@@ -2,9 +2,11 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 const HeroSection = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -17,6 +19,14 @@ const HeroSection = () => {
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
+
+  const handleStartCreating = () => {
+    navigate('/dashboard');
+  };
+
+  const handleExploreMarket = () => {
+    navigate('/market');
+  };
 
   return (
     <section className="min-h-screen relative overflow-hidden bg-neural-gradient flex items-center justify-center">
@@ -36,7 +46,6 @@ const HeroSection = () => {
         </svg>
       </div>
 
-      {/* Floating Particles */}
       <div className="absolute inset-0">
         {[...Array(20)].map((_, i) => (
           <motion.div
@@ -100,6 +109,7 @@ const HeroSection = () => {
             <Button 
               size="lg" 
               className="bg-cyber-blue hover:bg-cyber-blue/80 text-black font-bold px-8 py-4 text-lg rounded-full cyber-border neural-glow transition-all duration-300 hover:scale-105"
+              onClick={handleStartCreating}
             >
               Start Creating
             </Button>
@@ -107,6 +117,7 @@ const HeroSection = () => {
               variant="outline" 
               size="lg" 
               className="glass-morphism border-cyber-purple text-white font-bold px-8 py-4 text-lg rounded-full hover:bg-cyber-purple/20 transition-all duration-300 hover:scale-105"
+              onClick={handleExploreMarket}
             >
               Explore the Market
             </Button>

@@ -15,6 +15,14 @@ const MobileHero = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleStartCreating = () => {
+    navigate('/dashboard');
+  };
+
+  const handleExploreProducts = () => {
+    navigate('/explorer');
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 pt-8 pb-24">
       {/* Animated Background */}
@@ -25,7 +33,6 @@ const MobileHero = () => {
         }}
       />
 
-      {/* Floating Particles */}
       <div className="absolute inset-0">
         {[...Array(15)].map((_, i) => (
           <motion.div
@@ -99,7 +106,7 @@ const MobileHero = () => {
           <Button 
             size="lg" 
             className="w-full bg-gradient-to-r from-cyber-blue to-cyber-purple text-white font-bold py-4 text-lg rounded-2xl shadow-lg hover:shadow-cyber-blue/25 transition-all duration-300"
-            onClick={() => navigate('/dashboard')}
+            onClick={handleStartCreating}
           >
             <span>Start Creating</span>
             <ArrowRight size={20} className="ml-2" />
@@ -109,7 +116,7 @@ const MobileHero = () => {
             variant="outline" 
             size="lg" 
             className="w-full glass-morphism border-cyber-purple/50 text-white font-bold py-4 text-lg rounded-2xl hover:bg-cyber-purple/10 transition-all duration-300"
-            onClick={() => navigate('/explorer')}
+            onClick={handleExploreProducts}
           >
             Explore Products
           </Button>
@@ -137,7 +144,6 @@ const MobileHero = () => {
         </motion.div>
       </motion.div>
 
-      {/* Scroll Indicator */}
       <motion.div 
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
         animate={{ y: [0, 10, 0] }}

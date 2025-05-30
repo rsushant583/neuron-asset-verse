@@ -1,13 +1,23 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Upload, Brain, Sparkles, ArrowRight } from 'lucide-react';
+import { Upload, Brain, Sparkles, ArrowRight, ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
 import MobileNavigation from '@/components/mobile/MobileNavigation';
 
 const Create = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    category: '',
+    description: '',
+    files: [] as File[]
+  });
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -44,6 +54,60 @@ const Create = () => {
   const categories = [
     'Art & Design', 'Technology', 'Business', 'Science', 'Education', 'Entertainment'
   ];
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    setFormData(prev => ({ ...prev, files }));
+    
+    if (files.length > 0) {
+      toast({
+        title: "Files uploaded",
+        description: `${files.length} file(s) uploaded successfully`,
+        duration: 3000,
+      });
+    }
+  };
+
+  const handleSaveDraft = () => {
+    toast({
+      title: "Draft saved",
+      description: "Your idea has been saved as a draft",
+      duration: 3000,
+    });
+  };
+
+  const handleCreateNFT = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.title || !formData.description) {
+      toast({
+        title: "Missing information",
+        description: "Please fill in all required fields",
+        duration: 3000,
+      });
+      return;
+    }
+
+    toast({
+      title: "Creating NFT...",
+      description: "Your idea is being processed and minted as an NFT",
+      duration: 3000,
+    });
+
+    // Simulate NFT creation process
+    setTimeout(() => {
+      toast({
+        title: "NFT Created Successfully!",
+        description: "Your knowledge NFT has been minted and is now available",
+        duration: 5000,
+      });
+      navigate('/dashboard');
+    }, 2000);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-cyber-darker to-black overflow-x-hidden">
@@ -102,20 +166,27 @@ const Create = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
         >
           <div className="glass-morphism p-6 md:p-8 rounded-lg border border-cyber-blue/20">
-            <form className="space-y-6">
+            <form onSubmit={handleCreateNFT} className="space-y-6">
               <div>
-                <label className="block text-white font-medium mb-2">Idea Title</label>
+                <label className="block text-white font-medium mb-2">Idea Title *</label>
                 <input
                   type="text"
                   placeholder="Give your idea a compelling name..."
-                  className="w-full px-4 py-3 bg-white/5 border border-cyber-blue/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyber-blue/50"
+                  value={formData.title}
+                  onChange={(e) => handleInputChange('title', e.target.value)}
+                  className="w-full px-4 py-3 bg-white/5 border border-cyber-blue/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyber-blue/50 transition-colors"
+                  required
                 />
               </div>
 
               <div>
                 <label className="block text-white font-medium mb-2">Category</label>
-                <select className="w-full px-4 py-3 bg-white/5 border border-cyber-blue/20 rounded-lg text-white focus:outline-none focus:border-cyber-blue/50">
-                  <option value="">Select a category...</option>
+                <select 
+                  value={formData.category}
+                  onChange={(e) => handleInputChange('category', e.target.value)}
+                  className="w-full px-4 py-3 bg-white/5 border border-cyber-blue/20 rounded-lg text-white focus:outline-none focus:border-cyber-blue/50 transition-colors"
+                >
+                  <option value="" className="bg-black">Select a category...</option>
                   {categories.map(category => (
                     <option key={category} value={category} className="bg-black">
                       {category}
@@ -125,20 +196,43 @@ const Create = () => {
               </div>
 
               <div>
-                <label className="block text-white font-medium mb-2">Description</label>
+                <label className="block text-white font-medium mb-2">Description *</label>
                 <textarea
                   rows={4}
                   placeholder="Describe your idea in detail. What makes it unique and valuable?"
-                  className="w-full px-4 py-3 bg-white/5 border border-cyber-blue/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyber-blue/50 resize-none"
+                  value={formData.description}
+                  onChange={(e) => handleInputChange('description', e.target.value)}
+                  className="w-full px-4 py-3 bg-white/5 border border-cyber-blue/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyber-blue/50 resize-none transition-colors"
+                  required
                 />
               </div>
 
               <div>
                 <label className="block text-white font-medium mb-2">Upload Files (Optional)</label>
                 <div className="border-2 border-dashed border-cyber-blue/30 rounded-lg p-8 text-center hover:border-cyber-blue/50 transition-colors cursor-pointer">
-                  <Upload size={32} className="text-cyber-blue mx-auto mb-2" />
-                  <p className="text-gray-400 mb-2">Drag & drop files here or click to browse</p>
-                  <p className="text-sm text-gray-500">Support for images, documents, and media files</p>
+                  <input
+                    type="file"
+                    multiple
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    id="file-upload"
+                    accept="image/*,application/pdf,.doc,.docx,.txt"
+                  />
+                  <label htmlFor="file-upload" className="cursor-pointer">
+                    {formData.files.length > 0 ? (
+                      <div>
+                        <ImageIcon size={32} className="text-cyber-blue mx-auto mb-2" />
+                        <p className="text-gray-400 mb-2">{formData.files.length} file(s) selected</p>
+                        <p className="text-sm text-gray-500">Click to change files</p>
+                      </div>
+                    ) : (
+                      <div>
+                        <Upload size={32} className="text-cyber-blue mx-auto mb-2" />
+                        <p className="text-gray-400 mb-2">Drag & drop files here or click to browse</p>
+                        <p className="text-sm text-gray-500">Support for images, documents, and media files</p>
+                      </div>
+                    )}
+                  </label>
                 </div>
               </div>
 
@@ -147,12 +241,13 @@ const Create = () => {
                   type="button"
                   variant="outline" 
                   className="flex-1 border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/20"
+                  onClick={handleSaveDraft}
                 >
                   Save as Draft
                 </Button>
                 <Button 
                   type="submit"
-                  className="flex-1 bg-gradient-to-r from-cyber-blue to-cyber-purple text-white"
+                  className="flex-1 bg-gradient-to-r from-cyber-blue to-cyber-purple text-white hover:from-cyber-purple hover:to-cyber-pink transition-all duration-300"
                 >
                   Create NFT
                   <ArrowRight size={18} className="ml-2" />
