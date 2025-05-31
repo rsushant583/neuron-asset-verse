@@ -4,11 +4,14 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { LogOut, User } from 'lucide-react';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,7 +32,6 @@ const Navigation = () => {
 
   const handleNavigation = (href: string) => {
     if (href.startsWith('#')) {
-      // Handle hash navigation for sections on the homepage
       if (window.location.pathname !== '/') {
         navigate('/');
         setTimeout(() => {
@@ -45,16 +47,21 @@ const Navigation = () => {
     }
   };
 
-  const handleConnectWallet = () => {
-    toast({
-      title: "Wallet Connection",
-      description: "Wallet connection feature coming soon! Currently in development.",
-      duration: 3000,
-    });
-  };
-
-  const handleLaunchApp = () => {
-    navigate('/dashboard');
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign out",
+        variant: "destructive"
+      });
+    } else {
+      navigate('/');
+      toast({
+        title: "Signed out",
+        description: "You have been successfully signed out"
+      });
+    }
   };
 
   return (
@@ -95,21 +102,44 @@ const Navigation = () => {
             ))}
           </div>
 
-          {/* CTA Buttons */}
+          {/* Auth Buttons */}
           <div className="flex items-center space-x-4">
-            <Button
-              variant="outline"
-              className="hidden sm:inline-flex glass-morphism border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/20"
-              onClick={handleConnectWallet}
-            >
-              Connect Wallet
-            </Button>
-            <Button 
-              className="bg-gradient-to-r from-cyber-blue to-cyber-purple hover:from-cyber-purple hover:to-cyber-pink text-white"
-              onClick={handleLaunchApp}
-            >
-              Launch App
-            </Button>
+            {user ? (
+              <>
+                <Button
+                  variant="outline"
+                  className="hidden sm:inline-flex glass-morphism border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/20"
+                  onClick={() => navigate('/dashboard')}
+                >
+                  <User className="mr-2" size={18} />
+                  Dashboard
+                </Button>
+                <Button
+                  variant="outline"
+                  className="glass-morphism border-red-500/50 text-red-400 hover:bg-red-500/20"
+                  onClick={handleSignOut}
+                >
+                  <LogOut className="mr-2" size={18} />
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  className="hidden sm:inline-flex glass-morphism border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/20"
+                  onClick={() => navigate('/auth')}
+                >
+                  Sign In
+                </Button>
+                <Button 
+                  className="bg-gradient-to-r from-cyber-blue to-cyber-purple hover:from-cyber-purple hover:to-cyber-pink text-white"
+                  onClick={() => navigate('/auth')}
+                >
+                  Get Started
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>
