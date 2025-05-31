@@ -1,9 +1,13 @@
 
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Bell, Search, User } from 'lucide-react';
+import { Bell, Search } from 'lucide-react';
+import AvatarUpload from '@/components/ui/avatar-upload';
+import { useUserProfile } from '@/hooks/useUserProfile';
 
 const DashboardHeader = () => {
+  const { data: profile } = useUserProfile();
+
   return (
     <motion.header
       className="glass-morphism border-b border-cyber-blue/20 p-4"
@@ -13,7 +17,9 @@ const DashboardHeader = () => {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Welcome back, Alex</h1>
+          <h1 className="text-2xl font-bold text-white">
+            Welcome back, {profile?.username || 'Creator'}
+          </h1>
           <p className="text-gray-400">Transform your knowledge into digital assets</p>
         </div>
         
@@ -34,10 +40,8 @@ const DashboardHeader = () => {
             <span className="absolute -top-1 -right-1 w-3 h-3 bg-cyber-pink rounded-full"></span>
           </Button>
           
-          {/* Profile */}
-          <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
-            <User size={20} />
-          </Button>
+          {/* Profile Avatar */}
+          <AvatarUpload size="md" />
         </div>
       </div>
     </motion.header>
