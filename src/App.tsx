@@ -46,6 +46,16 @@ const AppContent = () => {
             <Dashboard />
           </ProtectedRoute>
         } />
+        <Route path="/dashboard/creator" element={
+          <ProtectedRoute>
+            <DashboardCreator />
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard/buyer" element={
+          <ProtectedRoute>
+            <DashboardBuyer />
+          </ProtectedRoute>
+        } />
         <Route path="/explorer" element={<Explorer />} />
         <Route path="/market" element={<Market />} />
         <Route path="/create" element={
