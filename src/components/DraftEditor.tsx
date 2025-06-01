@@ -116,6 +116,10 @@ const DraftEditor = ({ story, draft, onChange, title = '', onTitleChange, catego
     }
   };
 
+  const handleSuggestTitles = () => {
+    generateTitleSuggestions();
+  };
+
   const analyzeContentStructure = async () => {
     setIsAnalyzing(true);
     try {
@@ -193,7 +197,7 @@ const DraftEditor = ({ story, draft, onChange, title = '', onTitleChange, catego
           Edit Your Draft
           <div className="flex space-x-2">
             <Button
-              onClick={generateTitleSuggestions}
+              onClick={handleSuggestTitles}
               className="btn-accessible bg-purple-600 hover:bg-purple-700 flex items-center space-x-2"
               aria-label="Suggest titles"
             >
