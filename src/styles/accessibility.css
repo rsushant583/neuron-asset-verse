@@ -4,7 +4,7 @@
 @tailwind base;
 @tailwind components;
 
-/* Typography - Reduced font sizes */
+/* Typography - Optimized for readability */
 .text-body { font-size: 16px; line-height: 1.6; }
 .text-heading { font-size: 22px; line-height: 1.4; font-weight: 600; }
 .text-hero { font-size: 28px; line-height: 1.3; font-weight: 700; }
@@ -25,6 +25,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  border: 2px solid transparent;
 }
 
 .btn-primary {
@@ -33,6 +34,7 @@
 
 .btn-primary:hover {
   background-color: #3B82F6;
+  transform: translateY(-1px);
 }
 
 .btn-primary:focus {
@@ -46,18 +48,28 @@
 
 .btn-secondary:hover {
   @apply bg-blue-600 text-white;
+  transform: translateY(-1px);
 }
 
-/* Voice-specific button styles */
+/* Enhanced voice-specific button styles */
 .btn-voice { 
-  @apply p-6 bg-blue-600 text-white rounded-full fixed bottom-4 right-4 shadow-lg;
+  @apply p-6 bg-blue-600 text-white rounded-full fixed bottom-6 right-6 shadow-xl;
   min-width: 80px;
   min-height: 80px;
   z-index: 50;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
 }
 
 .btn-voice:hover {
-  @apply bg-blue-700 scale-105;
+  @apply bg-blue-700;
+  transform: scale(1.05);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.btn-voice:focus {
+  outline: 3px solid #F59E0B;
+  outline-offset: 2px;
 }
 
 /* Accessible form inputs */
@@ -69,12 +81,18 @@
   border-radius: 8px;
   background-color: #FFFFFF;
   color: #1F2937;
+  transition: all 0.2s ease;
 }
 
 .input-accessible:focus {
   outline: 3px solid #93C5FD;
   outline-offset: 2px;
   border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.input-accessible:hover {
+  border-color: #9CA3AF;
 }
 
 /* Voice navigation indicators */
@@ -94,29 +112,50 @@
   }
 }
 
-/* Version control card styles */
-.version-card { 
-  @apply p-4 border rounded-lg transition-all duration-200;
+/* Enhanced draft card styles */
+.draft-card { 
+  @apply p-4 border rounded-lg transition-all duration-200 cursor-pointer;
   background-color: #FFFFFF;
   color: #1F2937;
   border-color: #D1D5DB;
+  position: relative;
+  overflow: hidden;
 }
 
-.version-card:hover {
+.draft-card:hover {
   border-color: #9CA3AF;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
 }
 
-.version-card.selected {
+.draft-card.selected {
   border-color: #3B82F6;
   background-color: #EFF6FF;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* High contrast mode toggle */
+.draft-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, #3B82F6, #1D4ED8);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.draft-card:hover::before {
+  opacity: 1;
+}
+
+/* High contrast mode enhancements */
 .high-contrast .glass-morphism {
   background: #FFFFFF !important;
   border: 2px solid #1F2937 !important;
   color: #1F2937 !important;
+  backdrop-filter: none !important;
 }
 
 .high-contrast .text-white {
@@ -130,6 +169,12 @@
 .high-contrast .btn-voice {
   background-color: #1F2937 !important;
   color: #FFFFFF !important;
+  border-color: #FFFFFF !important;
+}
+
+.high-contrast .draft-card {
+  border-color: #1F2937 !important;
+  background-color: #FFFFFF !important;
 }
 
 /* Enhanced accessibility features */
@@ -145,35 +190,70 @@
   outline-offset: 2px;
 }
 
-/* Voice command feedback */
+/* Enhanced voice command feedback */
 .voice-feedback {
   position: fixed;
   top: 20px;
   right: 20px;
-  background: rgba(59, 130, 246, 0.9);
+  background: rgba(59, 130, 246, 0.95);
   color: white;
   padding: 12px 16px;
   border-radius: 8px;
   font-size: 14px;
   z-index: 1000;
   animation: slideIn 0.3s ease-out;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 @keyframes slideIn {
   from {
-    transform: translateX(100%);
+    transform: translateX(100%) translateY(-10px);
     opacity: 0;
   }
   to {
-    transform: translateX(0);
+    transform: translateX(0) translateY(0);
     opacity: 1;
   }
+}
+
+/* Connection status indicators */
+.connection-indicator {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.connection-indicator.connected {
+  background-color: #10B981;
+  animation: connectedPulse 2s infinite;
+}
+
+.connection-indicator.disconnected {
+  background-color: #EF4444;
+  animation: disconnectedBlink 1s infinite;
+}
+
+@keyframes connectedPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes disconnectedBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.3; }
 }
 
 /* Large text mode */
 .large-text .text-body { font-size: 20px; }
 .large-text .text-heading { font-size: 26px; }
 .large-text .text-hero { font-size: 32px; }
+.large-text .btn-accessible { font-size: 18px; padding: 14px 22px; }
+.large-text .input-accessible { font-size: 18px; padding: 14px; }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
@@ -185,6 +265,15 @@
   
   .voice-active {
     animation: none;
+    box-shadow: 0 0 0 3px #F59E0B;
+  }
+  
+  .btn-voice:hover {
+    transform: none;
+  }
+  
+  .draft-card:hover {
+    transform: none;
   }
 }
 
@@ -192,15 +281,40 @@
 @media print {
   .btn-voice,
   .voice-active,
-  .glass-morphism {
+  .glass-morphism,
+  .voice-feedback {
     display: none !important;
   }
   
-  .version-card {
+  .draft-card {
     border: 1px solid #000 !important;
     background: #fff !important;
     color: #000 !important;
+    box-shadow: none !important;
   }
+  
+  .draft-card::before {
+    display: none !important;
+  }
+}
+
+/* Glass morphism effects */
+.glass-morphism {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Loading states */
+.loading-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 @tailwind utilities;

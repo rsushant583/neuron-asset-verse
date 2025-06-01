@@ -1,227 +1,262 @@
 
-# MetaMind Platform - Voice-Driven eBook Creation
+# MetaMind Voice-Driven eBook Platform
 
-A fully voice-command-driven platform inspired by Jarvis, designed for older users (60+) to create and monetize digital products like medical eBooks. Built with React, Tailwind CSS, and ShadCN UI with WCAG 2.1 AA compliance.
+A fully voice-controlled platform for creating and publishing eBooks, designed specifically for older users (60+) with accessibility and ease-of-use in mind.
 
-## Features
+## 🎯 Features
 
-### 🎙️ Voice-Command System (Jarvis-like)
-- **Navigation**: "Go to dashboard", "Open marketplace", "Start eBook creation"
-- **Actions**: "Create medical eBook", "Record story", "Edit draft", "Publish now"
-- **Autofill**: "Set title to [spoken title]", "Set category to medical"
-- **Version Control**: "Show drafts", "Open draft version 2", "Save draft"
+### Voice Assistant (Jarvis-like Experience)
+- **Continuous Listening**: Toggle via floating microphone button
+- **Natural Commands**: Support for "Hey MetaMind" prefix (optional)
+- **Error Recovery**: Robust error handling with automatic retry
+- **Visual Feedback**: Real-time status indicators and toast notifications
 
-### 📚 Intelligent Content Management
-- AI-powered draft generation from voice/text input
-- Chapter-wise content structuring
-- Unique, copyright-compliant title suggestions
-- Version control system for iterative editing
+### Supported Voice Commands
 
-### ♿ Accessibility Features (WCAG 2.1 AA)
-- 4.5:1 contrast ratio minimum
-- 20px+ font sizes for readability
-- 48x48px minimum touch targets
-- Voice feedback at 0.8x speed for older users
-- High contrast mode toggle
+#### Authentication
+- "Sign in with email" - Navigate to login page
+- "Log out" - Sign out current user
 
-## Project Structure
+#### Navigation
+- "Go to dashboard" - Navigate to dashboard
+- "Go to marketplace" - Open marketplace
+- "Open eBook creation" - Start creation wizard
+
+#### eBook Creation
+- "Create medical eBook" - Start wizard with medical category
+- "Create business eBook" - Start wizard with business category
+- "Set title to [title]" - Autofill title with uniqueness check
+- "Select category medical" - Set category
+- "Give me a unique title about [topic]" - AI-generated title suggestions
+
+#### Draft Management
+- "Save draft" - Save current progress
+- "Show drafts" - Display version control panel
+- "Open draft version [number]" - Load specific draft
+- "Refresh drafts" - Update draft list
+
+#### Wizard Control
+- "Next step" - Move to next step in wizard
+- "Previous step" / "Go back" - Move to previous step
+- "Submit eBook" / "Publish now" - Submit for publishing
+
+#### Content Management
+- "Start recording" - Begin voice recording
+- "Stop recording" - End voice recording
+- "Edit draft" - Open draft editor
+
+#### Help
+- "Help" / "What can I say" - Show available commands
+
+## 🛠 Technology Stack
+
+- **Frontend**: React 18, TypeScript, Tailwind CSS, ShadCN UI
+- **Voice**: Web Speech API (Recognition & Synthesis)
+- **State Management**: React Hooks, Context API
+- **Authentication**: Supabase Auth
+- **Database**: Supabase (PostgreSQL)
+- **Animations**: Framer Motion
+- **HTTP Client**: Axios
+- **Notifications**: React Toastify
+
+## 📁 Project Structure
 
 ```
 frontend/src/
 ├── components/
-│   ├── VoiceAssistant.tsx      # Jarvis-like voice command system
-│   ├── CreatorWizard.tsx       # Enhanced multi-step creation wizard
-│   ├── VoiceInput.tsx          # Voice-to-text input component
-│   ├── DraftEditor.tsx         # AI-powered content editor
+│   ├── VoiceAssistant.tsx      # Main voice command handler
+│   ├── CreatorWizard.tsx       # eBook creation wizard
 │   ├── VersionControl.tsx      # Draft version management
-│   ├── TemplateSelector.tsx    # eBook template selection
-│   └── PublishForm.tsx         # Publishing and pricing
-├── hooks/
-│   ├── useVoiceCommands.ts     # Voice recognition hook
-│   ├── useVersionControl.ts    # Draft management hook
-│   └── useAccessibility.ts     # Accessibility preferences
-├── lib/
-│   ├── api.ts                  # API utilities
-│   └── versionControl.ts       # Version control API
+│   ├── DraftEditor.tsx         # Content editing interface
+│   ├── VoiceInput.tsx          # Voice recording component
+│   ├── TemplateSelector.tsx    # Template selection
+│   └── PublishForm.tsx         # Publishing interface
 ├── pages/
-│   └── Dashboard.tsx           # Enhanced dashboard with voice support
+│   ├── Dashboard.tsx           # User dashboard
+│   ├── Create.tsx             # Creation page
+│   └── Market.tsx             # Marketplace
+├── hooks/
+│   ├── useVoiceCommands.ts    # Voice recognition hook
+│   ├── useVersionControl.ts   # Draft management hook
+│   └── useAccessibility.ts    # Accessibility preferences
+├── lib/
+│   ├── api.ts                 # API client with error handling
+│   └── versionControl.ts      # Version control utilities
 └── styles/
-    └── accessibility.css       # WCAG compliant styles
-
-backend/
-└── routes/
-    └── drafts.py              # FastAPI endpoints for draft management
-
-ai/
-└── grok_client.py             # Placeholder for Grok AI integration
-
-blockchain/
-├── mint_nft.py                # Placeholder for Polygon NFT minting
-└── web3_config.js             # Web3 configuration
+    └── accessibility.css      # WCAG 2.1 AA compliant styles
 ```
 
-## Quick Start
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ and npm
-- Python 3.8+ (for backend)
+- Node.js 18+ 
+- npm or yarn
 - Modern browser with Web Speech API support
 
-### Frontend Setup
-```bash
-# Install dependencies
-npm install
+### Installation
 
-# Start development server
-npm run dev
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd neuron-asset-verse
+   ```
 
-# Open http://localhost:5173
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Environment Setup**
+   ```bash
+   # Copy environment template
+   cp .env.example .env.local
+   
+   # Add your Supabase credentials
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+
+4. **Start development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open browser**
+   Navigate to `http://localhost:5173`
+
+### Browser Permissions
+
+The app requires microphone access for voice commands:
+1. Click the microphone button
+2. Allow microphone permissions when prompted
+3. Start speaking commands
+
+## 🎙 Voice Recognition Setup
+
+### Supported Browsers
+- Chrome 25+ (Recommended)
+- Edge 79+
+- Safari 14.1+
+- Firefox (limited support)
+
+### Troubleshooting Voice Issues
+
+1. **Microphone Access Denied**
+   - Check browser permissions in Settings
+   - Ensure HTTPS connection (required for Web Speech API)
+   - Try refreshing the page
+
+2. **No Speech Detected**
+   - Speak clearly and at normal volume
+   - Check microphone is working in other apps
+   - Try moving closer to microphone
+
+3. **Commands Not Recognized**
+   - Speak slowly and clearly
+   - Use exact command phrases
+   - Try the "Help" command to see available options
+
+## 🎨 Design System
+
+### Typography
+- **Body Text**: 16px Inter, line-height 1.6
+- **Headings**: 22px Inter, line-height 1.4
+- **Hero Text**: 28px Inter, line-height 1.3
+
+### Colors (WCAG 2.1 AA Compliant)
+- **Primary**: #4B8BBE (4.5:1 contrast ratio)
+- **Secondary**: #F4A261
+- **Background**: #FFFFFF
+- **Text**: #1F2937
+
+### Accessibility Features
+- **Touch Targets**: Minimum 48x48px
+- **Focus Indicators**: 3px outline with offset
+- **Voice Feedback**: 0.8x speed for better comprehension
+- **High Contrast Mode**: Toggle for enhanced visibility
+- **Large Text Mode**: 20-32px font sizes
+- **Reduced Motion**: Respects user preferences
+
+## 🔧 API Endpoints
+
+### Authentication
+- `POST /auth/sign-in` - User authentication
+- `POST /auth/sign-out` - User logout
+
+### Content Management
+- `POST /check-title` - Title uniqueness check
+- `POST /suggest-title` - AI title generation
+- `POST /save-draft` - Save draft version
+- `GET /drafts/:userId` - Get user drafts
+- `DELETE /drafts/:draftId` - Delete draft
+
+### AI Services
+- `POST /api/draft` - Generate AI content
+- `POST /api/analyze-content` - Content structure analysis
+
+## 🧪 Testing Voice Commands
+
+1. **Start the voice assistant** by clicking the microphone button
+2. **Wait for the "Listening..." indicator**
+3. **Speak clearly**: "Create medical eBook"
+4. **Observe feedback**: Toast notification and voice response
+5. **Try navigation**: "Go to dashboard"
+6. **Test error handling**: Say an unrecognized command
+
+### Example Test Scenarios
+
+```javascript
+// Test basic navigation
+"Go to dashboard" → Should navigate to /dashboard
+
+// Test content creation
+"Create medical eBook" → Should open wizard with medical category
+
+// Test title setting
+"Set title to Healing Wisdom" → Should autofill title field
+
+// Test draft management
+"Save draft" → Should save current progress
+"Show drafts" → Should display version control panel
+
+// Test help system
+"Help" → Should show available commands
 ```
 
-### Backend Setup (Optional)
-```bash
-# Navigate to backend directory
-cd backend
+## 🔐 Security & Privacy
 
-# Install Python dependencies
-pip install fastapi uvicorn python-multipart
+- **Microphone Access**: Only used for voice commands, not recorded
+- **Speech Data**: Processed locally via Web Speech API
+- **Authentication**: Secure JWT tokens via Supabase
+- **Data Encryption**: All API communications over HTTPS
 
-# Start FastAPI server
-python -m uvicorn routes.drafts:app --reload --port 8000
-```
+## 🌐 Browser Support
 
-## Voice Commands Reference
+| Browser | Version | Voice Support | Notes |
+|---------|---------|---------------|--------|
+| Chrome | 25+ | ✅ Full | Recommended |
+| Edge | 79+ | ✅ Full | Good |
+| Safari | 14.1+ | ⚠️ Limited | iOS Safari has restrictions |
+| Firefox | Latest | ❌ None | No Web Speech API support |
 
-### Navigation
-- "Go to dashboard" - Navigate to main dashboard
-- "Open marketplace" - Go to product marketplace
-- "Start eBook creation" - Begin creation wizard
+## 🤝 Contributing
 
-### Content Creation
-- "Create medical eBook" - Start with medical category pre-selected
-- "Record story" - Begin voice recording
-- "Edit draft" - Open draft editor
-- "Generate draft" - Create AI-powered content
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/voice-enhancement`)
+3. Commit changes (`git commit -am 'Add new voice command'`)
+4. Push to branch (`git push origin feature/voice-enhancement`)
+5. Create Pull Request
 
-### Draft Management
-- "Save draft" - Save current progress
-- "Show drafts" - Display version control panel
-- "Open draft version [number]" - Load specific draft version
+## 📄 License
 
-### Content Enhancement
-- "Suggest title" - Generate unique title suggestions
-- "Set title to [title]" - Set specific title via voice
-- "Set category to [category]" - Set content category
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### Publishing
-- "Publish now" - Proceed to publishing step
-- "Check title" - Verify title uniqueness
+## 🆘 Support
 
-## API Endpoints
-
-### Draft Management
-- `POST /api/save-draft` - Save new draft version
-- `GET /api/drafts/{user_id}` - Get all user drafts
-- `DELETE /api/drafts/{draft_id}` - Delete specific draft
-
-### Content Enhancement
-- `POST /api/check-title` - Check title uniqueness
-- `POST /api/suggest-titles` - Generate title suggestions
-- `POST /api/analyze-content` - Structure content into chapters
-
-## Accessibility Features
-
-### Visual
-- High contrast mode (toggle in settings)
-- Large text option (24px+ body text)
-- 4.5:1 minimum contrast ratio
-- Clear focus indicators
-
-### Motor
-- 48x48px minimum touch targets
-- Voice-driven navigation reduces need for precise clicking
-- Keyboard navigation support
-
-### Cognitive
-- Voice feedback confirms all actions
-- Clear, simple language in all prompts
-- Consistent navigation patterns
-- Auto-save functionality prevents data loss
-
-### Auditory
-- Text-to-speech for all content
-- Adjustable speech rate (0.8x default for older users)
-- Visual indicators complement audio feedback
-
-## Technology Stack
-
-### Frontend
-- **React 18** - UI framework
-- **TypeScript** - Type safety
-- **Tailwind CSS** - Styling
-- **ShadCN UI** - Component library
-- **Web Speech API** - Voice recognition/synthesis
-- **Framer Motion** - Animations
-- **React Router** - Navigation
-
-### Backend (Placeholders)
-- **FastAPI** - Python web framework
-- **Supabase** - Database and authentication
-- **Grok AI** - Content analysis and generation
-- **Polygon** - NFT minting for digital ownership
-
-## Voice Recognition Browser Support
-
-| Browser | Support | Notes |
-|---------|---------|-------|
-| Chrome | ✅ Full | Recommended browser |
-| Edge | ✅ Full | WebKit-based versions |
-| Safari | ⚠️ Limited | iOS 14.5+ required |
-| Firefox | ❌ None | No Web Speech API support |
-
-## Development Guidelines
-
-### Accessibility Testing
-```bash
-# Install accessibility testing tools
-npm install -D @axe-core/react eslint-plugin-jsx-a11y
-
-# Run accessibility audit
-npm run a11y-audit
-```
-
-### Voice Command Testing
-1. Enable microphone permissions
-2. Use Chrome DevTools to simulate voice input
-3. Test with various accents and speech patterns
-4. Verify fallback behavior for unsupported browsers
-
-### Performance Optimization
-- Lazy load voice recognition only when needed
-- Debounce auto-save operations
-- Compress audio data for voice transcription
-- Cache frequently used AI suggestions
-
-## Contributing
-
-1. Follow WCAG 2.1 AA guidelines for all UI changes
-2. Test voice commands across different browsers
-3. Ensure new features work without voice input
-4. Add appropriate ARIA labels and semantic HTML
-5. Test with screen readers and keyboard navigation
-
-## License
-
-MIT License - see LICENSE file for details
-
-## Support
-
-For accessibility issues or voice command problems:
-- Check browser microphone permissions
-- Ensure stable internet connection for AI features
-- Use keyboard navigation as fallback
-- Contact support for additional assistance
+- **Documentation**: Check this README and code comments
+- **Issues**: Create GitHub issue with voice command logs
+- **Voice Problems**: Include browser version and error console output
 
 ---
 
-**Built with ❤️ for older adults who want to share their wisdom with the world**
+Built with ❤️ for accessibility and voice-first experiences.
