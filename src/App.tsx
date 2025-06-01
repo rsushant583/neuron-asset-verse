@@ -20,6 +20,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
 import MobileNavigation from "./components/mobile/MobileNavigation";
 import PWAInstallPrompt from "./components/mobile/PWAInstallPrompt";
+import VoiceAssistant from "./components/VoiceAssistant";
+
+// Import accessibility styles
+import "./styles/accessibility.css";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +41,21 @@ const AppContent = () => {
     
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  const handleVoiceCommand = (command: string) => {
+    console.log('Global voice command:', command);
+    
+    // Handle global navigation commands
+    if (command.includes('go to dashboard')) {
+      window.location.href = '/dashboard';
+    } else if (command.includes('go home')) {
+      window.location.href = '/';
+    } else if (command.includes('go to marketplace')) {
+      window.location.href = '/market';
+    } else if (command.includes('go to explorer')) {
+      window.location.href = '/explorer';
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black">
@@ -71,6 +90,7 @@ const AppContent = () => {
       
       {isMobile && <MobileNavigation />}
       <PWAInstallPrompt />
+      <VoiceAssistant onCommand={handleVoiceCommand} />
     </div>
   );
 };
