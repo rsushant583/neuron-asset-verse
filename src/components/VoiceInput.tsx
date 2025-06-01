@@ -1,4 +1,5 @@
 
+/// <reference path="../types/speech.d.ts" />
 import React, { useState, useEffect } from 'react';
 import { Mic, MicOff, PlayCircle, PauseCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';

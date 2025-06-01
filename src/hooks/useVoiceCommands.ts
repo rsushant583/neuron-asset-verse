@@ -1,4 +1,5 @@
 
+/// <reference path="../types/speech.d.ts" />
 import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
