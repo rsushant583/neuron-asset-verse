@@ -1,6 +1,6 @@
 
 // Speech Recognition API type declarations
-interface SpeechRecognitionInterface extends EventTarget {
+declare interface SpeechRecognitionInterface extends EventTarget {
   continuous: boolean;
   interimResults: boolean;
   lang: string;
@@ -11,35 +11,35 @@ interface SpeechRecognitionInterface extends EventTarget {
   onend: (() => void) | null;
 }
 
-interface SpeechRecognitionEvent extends Event {
+declare interface SpeechRecognitionEvent extends Event {
   resultIndex: number;
   results: SpeechRecognitionResultList;
 }
 
-interface SpeechRecognitionErrorEvent extends Event {
+declare interface SpeechRecognitionErrorEvent extends Event {
   error: string;
   message?: string;
 }
 
-interface SpeechRecognitionResultList {
+declare interface SpeechRecognitionResultList {
   readonly length: number;
   item(index: number): SpeechRecognitionResult;
   [index: number]: SpeechRecognitionResult;
 }
 
-interface SpeechRecognitionResult {
+declare interface SpeechRecognitionResult {
   readonly length: number;
   item(index: number): SpeechRecognitionAlternative;
   [index: number]: SpeechRecognitionAlternative;
   isFinal: boolean;
 }
 
-interface SpeechRecognitionAlternative {
+declare interface SpeechRecognitionAlternative {
   transcript: string;
   confidence: number;
 }
 
-interface SpeechRecognitionConstructor {
+declare interface SpeechRecognitionConstructor {
   new (): SpeechRecognitionInterface;
 }
 
