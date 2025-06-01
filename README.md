@@ -1,73 +1,227 @@
-# Welcome to your Lovable project
 
-## Project info
+# MetaMind Platform - Voice-Driven eBook Creation
 
-**URL**: https://lovable.dev/projects/56e2a2b1-78f9-47f1-9a67-6560f398f03d
+A fully voice-command-driven platform inspired by Jarvis, designed for older users (60+) to create and monetize digital products like medical eBooks. Built with React, Tailwind CSS, and ShadCN UI with WCAG 2.1 AA compliance.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+### 🎙️ Voice-Command System (Jarvis-like)
+- **Navigation**: "Go to dashboard", "Open marketplace", "Start eBook creation"
+- **Actions**: "Create medical eBook", "Record story", "Edit draft", "Publish now"
+- **Autofill**: "Set title to [spoken title]", "Set category to medical"
+- **Version Control**: "Show drafts", "Open draft version 2", "Save draft"
 
-**Use Lovable**
+### 📚 Intelligent Content Management
+- AI-powered draft generation from voice/text input
+- Chapter-wise content structuring
+- Unique, copyright-compliant title suggestions
+- Version control system for iterative editing
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/56e2a2b1-78f9-47f1-9a67-6560f398f03d) and start prompting.
+### ♿ Accessibility Features (WCAG 2.1 AA)
+- 4.5:1 contrast ratio minimum
+- 20px+ font sizes for readability
+- 48x48px minimum touch targets
+- Voice feedback at 0.8x speed for older users
+- High contrast mode toggle
 
-Changes made via Lovable will be committed automatically to this repo.
+## Project Structure
 
-**Use your preferred IDE**
+```
+frontend/src/
+├── components/
+│   ├── VoiceAssistant.tsx      # Jarvis-like voice command system
+│   ├── CreatorWizard.tsx       # Enhanced multi-step creation wizard
+│   ├── VoiceInput.tsx          # Voice-to-text input component
+│   ├── DraftEditor.tsx         # AI-powered content editor
+│   ├── VersionControl.tsx      # Draft version management
+│   ├── TemplateSelector.tsx    # eBook template selection
+│   └── PublishForm.tsx         # Publishing and pricing
+├── hooks/
+│   ├── useVoiceCommands.ts     # Voice recognition hook
+│   ├── useVersionControl.ts    # Draft management hook
+│   └── useAccessibility.ts     # Accessibility preferences
+├── lib/
+│   ├── api.ts                  # API utilities
+│   └── versionControl.ts       # Version control API
+├── pages/
+│   └── Dashboard.tsx           # Enhanced dashboard with voice support
+└── styles/
+    └── accessibility.css       # WCAG compliant styles
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+backend/
+└── routes/
+    └── drafts.py              # FastAPI endpoints for draft management
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+ai/
+└── grok_client.py             # Placeholder for Grok AI integration
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+blockchain/
+├── mint_nft.py                # Placeholder for Polygon NFT minting
+└── web3_config.js             # Web3 configuration
 ```
 
-**Edit a file directly in GitHub**
+## Quick Start
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Prerequisites
+- Node.js 18+ and npm
+- Python 3.8+ (for backend)
+- Modern browser with Web Speech API support
 
-**Use GitHub Codespaces**
+### Frontend Setup
+```bash
+# Install dependencies
+npm install
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Start development server
+npm run dev
 
-## What technologies are used for this project?
+# Open http://localhost:5173
+```
 
-This project is built with:
+### Backend Setup (Optional)
+```bash
+# Navigate to backend directory
+cd backend
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+# Install Python dependencies
+pip install fastapi uvicorn python-multipart
 
-## How can I deploy this project?
+# Start FastAPI server
+python -m uvicorn routes.drafts:app --reload --port 8000
+```
 
-Simply open [Lovable](https://lovable.dev/projects/56e2a2b1-78f9-47f1-9a67-6560f398f03d) and click on Share -> Publish.
+## Voice Commands Reference
 
-## Can I connect a custom domain to my Lovable project?
+### Navigation
+- "Go to dashboard" - Navigate to main dashboard
+- "Open marketplace" - Go to product marketplace
+- "Start eBook creation" - Begin creation wizard
 
-Yes, you can!
+### Content Creation
+- "Create medical eBook" - Start with medical category pre-selected
+- "Record story" - Begin voice recording
+- "Edit draft" - Open draft editor
+- "Generate draft" - Create AI-powered content
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Draft Management
+- "Save draft" - Save current progress
+- "Show drafts" - Display version control panel
+- "Open draft version [number]" - Load specific draft version
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### Content Enhancement
+- "Suggest title" - Generate unique title suggestions
+- "Set title to [title]" - Set specific title via voice
+- "Set category to [category]" - Set content category
+
+### Publishing
+- "Publish now" - Proceed to publishing step
+- "Check title" - Verify title uniqueness
+
+## API Endpoints
+
+### Draft Management
+- `POST /api/save-draft` - Save new draft version
+- `GET /api/drafts/{user_id}` - Get all user drafts
+- `DELETE /api/drafts/{draft_id}` - Delete specific draft
+
+### Content Enhancement
+- `POST /api/check-title` - Check title uniqueness
+- `POST /api/suggest-titles` - Generate title suggestions
+- `POST /api/analyze-content` - Structure content into chapters
+
+## Accessibility Features
+
+### Visual
+- High contrast mode (toggle in settings)
+- Large text option (24px+ body text)
+- 4.5:1 minimum contrast ratio
+- Clear focus indicators
+
+### Motor
+- 48x48px minimum touch targets
+- Voice-driven navigation reduces need for precise clicking
+- Keyboard navigation support
+
+### Cognitive
+- Voice feedback confirms all actions
+- Clear, simple language in all prompts
+- Consistent navigation patterns
+- Auto-save functionality prevents data loss
+
+### Auditory
+- Text-to-speech for all content
+- Adjustable speech rate (0.8x default for older users)
+- Visual indicators complement audio feedback
+
+## Technology Stack
+
+### Frontend
+- **React 18** - UI framework
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Styling
+- **ShadCN UI** - Component library
+- **Web Speech API** - Voice recognition/synthesis
+- **Framer Motion** - Animations
+- **React Router** - Navigation
+
+### Backend (Placeholders)
+- **FastAPI** - Python web framework
+- **Supabase** - Database and authentication
+- **Grok AI** - Content analysis and generation
+- **Polygon** - NFT minting for digital ownership
+
+## Voice Recognition Browser Support
+
+| Browser | Support | Notes |
+|---------|---------|-------|
+| Chrome | ✅ Full | Recommended browser |
+| Edge | ✅ Full | WebKit-based versions |
+| Safari | ⚠️ Limited | iOS 14.5+ required |
+| Firefox | ❌ None | No Web Speech API support |
+
+## Development Guidelines
+
+### Accessibility Testing
+```bash
+# Install accessibility testing tools
+npm install -D @axe-core/react eslint-plugin-jsx-a11y
+
+# Run accessibility audit
+npm run a11y-audit
+```
+
+### Voice Command Testing
+1. Enable microphone permissions
+2. Use Chrome DevTools to simulate voice input
+3. Test with various accents and speech patterns
+4. Verify fallback behavior for unsupported browsers
+
+### Performance Optimization
+- Lazy load voice recognition only when needed
+- Debounce auto-save operations
+- Compress audio data for voice transcription
+- Cache frequently used AI suggestions
+
+## Contributing
+
+1. Follow WCAG 2.1 AA guidelines for all UI changes
+2. Test voice commands across different browsers
+3. Ensure new features work without voice input
+4. Add appropriate ARIA labels and semantic HTML
+5. Test with screen readers and keyboard navigation
+
+## License
+
+MIT License - see LICENSE file for details
+
+## Support
+
+For accessibility issues or voice command problems:
+- Check browser microphone permissions
+- Ensure stable internet connection for AI features
+- Use keyboard navigation as fallback
+- Contact support for additional assistance
+
+---
+
+**Built with ❤️ for older adults who want to share their wisdom with the world**

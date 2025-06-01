@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
@@ -10,11 +11,17 @@ import EarningsWidget from '@/components/dashboard/EarningsWidget';
 import TokenWallet from '@/components/dashboard/TokenWallet';
 import RemixHistory from '@/components/dashboard/RemixHistory';
 import DAOVoting from '@/components/dashboard/DAOVoting';
+import VersionControl from '@/components/VersionControl';
+import VoiceAssistant from '@/components/VoiceAssistant';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const navigate = useNavigate();
+  
+  const userId = 'user123'; // This would come from auth context
 
   useEffect(() => {
     const checkMobile = () => {
@@ -26,6 +33,29 @@ const Dashboard = () => {
     
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  const handleVoiceCommand = (command: string) => {
+    // Handle voice commands specific to dashboard
+    if (command === 'show_drafts') {
+      setActiveTab('drafts');
+      document.getElementById('version-control')?.scrollIntoView({ behavior: 'smooth' });
+    } else if (command.includes('create') && command.includes('medical')) {
+      navigate('/create?category=medical');
+    } else if (command.includes('create') && command.includes('ebook')) {
+      navigate('/create');
+    } else if (command.includes('go to') || command.includes('open')) {
+      // Handle navigation commands
+      if (command.includes('marketplace')) {
+        navigate('/market');
+      } else if (command.includes('upload') || command.includes('idea')) {
+        setActiveTab('upload');
+      } else if (command.includes('earnings') || command.includes('wallet')) {
+        setActiveTab('wallet');
+      } else if (command.includes('voting')) {
+        setActiveTab('voting');
+      }
+    }
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -54,6 +84,18 @@ const Dashboard = () => {
             <EarningsWidget />
           </div>
         );
+      case 'drafts':
+        return (
+          <div className="space-y-6">
+            <VersionControl 
+              userId={userId}
+              onDraftSelect={(draft) => {
+                // Navigate to creator wizard with the selected draft
+                navigate(`/create?draftId=${draft.id}`);
+              }}
+            />
+          </div>
+        );
       case 'settings':
         return (
           <motion.div
@@ -64,16 +106,42 @@ const Dashboard = () => {
             <h2 className="text-2xl font-bold text-white mb-6">Settings</h2>
             <div className="space-y-4">
               <div className="p-4 bg-white/5 rounded-lg">
-                <h3 className="text-lg font-semibold text-cyber-blue mb-2">Account Settings</h3>
-                <p className="text-gray-400">Manage your account preferences and security</p>
+                <h3 className="text-lg font-semibold text-cyber-blue mb-2">Voice Settings</h3>
+                <p className="text-gray-400 mb-4">Configure voice assistant preferences</p>
+                <div className="space-y-2">
+                  <label className="flex items-center space-x-2">
+                    <input type="checkbox" defaultChecked className="form-checkbox" />
+                    <span className="text-white">Enable voice commands</span>
+                  </label>
+                  <label className="flex items-center space-x-2">
+                    <input type="checkbox" defaultChecked className="form-checkbox" />
+                    <span className="text-white">Voice feedback</span>
+                  </label>
+                </div>
               </div>
               <div className="p-4 bg-white/5 rounded-lg">
-                <h3 className="text-lg font-semibold text-cyber-blue mb-2">Notification Settings</h3>
-                <p className="text-gray-400">Configure how you receive updates</p>
+                <h3 className="text-lg font-semibold text-cyber-blue mb-2">Accessibility Settings</h3>
+                <p className="text-gray-400 mb-4">Enhance usability for better experience</p>
+                <div className="space-y-2">
+                  <label className="flex items-center space-x-2">
+                    <input type="checkbox" className="form-checkbox" />
+                    <span className="text-white">High contrast mode</span>
+                  </label>
+                  <label className="flex items-center space-x-2">
+                    <input type="checkbox" className="form-checkbox" />
+                    <span className="text-white">Large text mode</span>
+                  </label>
+                </div>
               </div>
               <div className="p-4 bg-white/5 rounded-lg">
-                <h3 className="text-lg font-semibold text-cyber-blue mb-2">Privacy Settings</h3>
-                <p className="text-gray-400">Control your data and privacy preferences</p>
+                <h3 className="text-lg font-semibold text-cyber-blue mb-2">Auto-save Settings</h3>
+                <p className="text-gray-400 mb-4">Manage automatic draft saving</p>
+                <div className="space-y-2">
+                  <label className="flex items-center space-x-2">
+                    <input type="checkbox" defaultChecked className="form-checkbox" />
+                    <span className="text-white">Enable auto-save every 30 seconds</span>
+                  </label>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -81,6 +149,22 @@ const Dashboard = () => {
       default:
         return <ProductsOverview />;
     }
+  };
+
+  // Update sidebar to include drafts tab
+  const enhancedSidebarProps = {
+    activeTab,
+    setActiveTab,
+    collapsed: sidebarCollapsed,
+    setCollapsed: setSidebarCollapsed,
+    extraTabs: [
+      {
+        id: 'drafts',
+        label: 'Draft Versions',
+        icon: 'FileText',
+        description: 'Manage your eBook drafts'
+      }
+    ]
   };
 
   if (isMobile) {
@@ -101,18 +185,14 @@ const Dashboard = () => {
         </main>
         
         <MobileDashboardNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+        <VoiceAssistant onCommand={handleVoiceCommand} />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyber-darker via-black to-cyber-dark">
-      <DashboardSidebar 
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        collapsed={sidebarCollapsed}
-        setCollapsed={setSidebarCollapsed}
-      />
+      <DashboardSidebar {...enhancedSidebarProps} />
       
       <div className={`transition-all duration-300 ${sidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
         <DashboardHeader />
@@ -127,6 +207,8 @@ const Dashboard = () => {
           </motion.div>
         </main>
       </div>
+      
+      <VoiceAssistant onCommand={handleVoiceCommand} />
     </div>
   );
 };

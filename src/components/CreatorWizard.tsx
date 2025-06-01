@@ -1,7 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CheckCircle, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -9,6 +9,11 @@ import VoiceInput from './VoiceInput';
 import DraftEditor from './DraftEditor';
 import TemplateSelector from './TemplateSelector';
 import PublishForm from './PublishForm';
+import VersionControl from './VersionControl';
+import VoiceAssistant from './VoiceAssistant';
+import { useVersionControl } from '@/hooks/useVersionControl';
+import { useToast } from '@/hooks/use-toast';
+import { suggestTitles, checkTitle } from '@/lib/versionControl';
 
 interface CreatorWizardProps {
   onComplete?: (productData: any) => void;
@@ -21,6 +26,13 @@ const CreatorWizard = ({ onComplete, onClose }: CreatorWizardProps) => {
   const [draftContent, setDraftContent] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState('');
   const [publishData, setPublishData] = useState({});
+  const [category, setCategory] = useState('');
+  const [title, setTitle] = useState('');
+  const [autoSave, setAutoSave] = useState(true);
+  
+  const userId = 'user123'; // This would come from auth context
+  const { saveDraft } = useVersionControl(userId);
+  const { toast } = useToast();
 
   const steps = [
     { id: 1, title: 'Tell Your Story', description: 'Share your life experiences and wisdom' },
@@ -31,27 +43,122 @@ const CreatorWizard = ({ onComplete, onClose }: CreatorWizardProps) => {
 
   const progress = (currentStep / steps.length) * 100;
 
+  // Auto-save functionality
+  useEffect(() => {
+    if (autoSave && (storyText || draftContent)) {
+      const saveTimer = setTimeout(() => {
+        handleAutoSave();
+      }, 30000); // Auto-save every 30 seconds
+
+      return () => clearTimeout(saveTimer);
+    }
+  }, [storyText, draftContent, autoSave]);
+
+  // Handle URL parameters for category pre-filling
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryParam = urlParams.get('category');
+    if (categoryParam) {
+      setCategory(categoryParam);
+      generateTitleSuggestions(categoryParam);
+    }
+  }, []);
+
+  const handleAutoSave = async () => {
+    if (storyText || draftContent) {
+      try {
+        await saveDraft(draftContent || storyText, title, []);
+        console.log('Auto-saved draft');
+      } catch (error) {
+        console.error('Auto-save failed:', error);
+      }
+    }
+  };
+
+  const generateTitleSuggestions = async (contentCategory?: string) => {
+    try {
+      const content = draftContent || storyText;
+      if (content) {
+        const suggestions = await suggestTitles(content, contentCategory || category);
+        if (suggestions.length > 0) {
+          const suggestedTitle = suggestions[0];
+          const titleCheck = await checkTitle(suggestedTitle);
+          
+          if (titleCheck.isUnique) {
+            setTitle(suggestedTitle);
+            speak(`I've suggested the title: ${suggestedTitle}`);
+          } else if (titleCheck.suggested) {
+            setTitle(titleCheck.suggested);
+            speak(`I've suggested an alternative title: ${titleCheck.suggested}`);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Failed to generate title suggestions:', error);
+    }
+  };
+
+  const handleVoiceCommand = (command: string) => {
+    if (command === 'next_step') {
+      nextStep();
+    } else if (command === 'previous_step') {
+      prevStep();
+    } else if (command === 'save_draft') {
+      handleManualSave();
+    } else if (command === 'suggest_title') {
+      generateTitleSuggestions();
+    } else if (command.startsWith('set_title_')) {
+      const newTitle = command.replace('set_title_', '').replace(/_/g, ' ');
+      setTitle(newTitle);
+      speak(`Title set to ${newTitle}`);
+    } else if (command.startsWith('set_category_')) {
+      const newCategory = command.replace('set_category_', '');
+      setCategory(newCategory);
+      generateTitleSuggestions(newCategory);
+      speak(`Category set to ${newCategory}`);
+    } else if (command === 'publish_now' && currentStep === 4) {
+      handleComplete();
+    }
+  };
+
+  const speak = (text: string) => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.8;
+      utterance.pitch = 1;
+      utterance.volume = 0.8;
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  const handleManualSave = async () => {
+    try {
+      await saveDraft(draftContent || storyText, title, []);
+      toast({
+        title: "Draft Saved",
+        description: "Your progress has been saved successfully.",
+      });
+      speak('Draft saved successfully');
+    } catch (error) {
+      toast({
+        title: "Save Failed",
+        description: "Could not save your draft. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const nextStep = () => {
     if (currentStep < steps.length) {
       setCurrentStep(currentStep + 1);
-      // Voice feedback
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(`Moving to step ${currentStep + 1}: ${steps[currentStep].title}`);
-        utterance.rate = 0.8;
-        window.speechSynthesis.speak(utterance);
-      }
+      speak(`Moving to step ${currentStep + 1}: ${steps[currentStep].title}`);
     }
   };
 
   const prevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
-      // Voice feedback
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(`Moving to step ${currentStep - 1}: ${steps[currentStep - 2].title}`);
-        utterance.rate = 0.8;
-        window.speechSynthesis.speak(utterance);
-      }
+      speak(`Moving to step ${currentStep - 1}: ${steps[currentStep - 2].title}`);
     }
   };
 
@@ -60,21 +167,34 @@ const CreatorWizard = ({ onComplete, onClose }: CreatorWizardProps) => {
       story: storyText,
       draft: draftContent,
       template: selectedTemplate,
-      publish: publishData
+      publish: publishData,
+      title,
+      category
     };
     onComplete?.(productData);
+    speak('Congratulations! Your eBook has been published successfully');
   };
 
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
         return (
-          <VoiceInput
-            value={storyText}
-            onChange={setStoryText}
-            label="Tell Your Story"
-            placeholder="Share your life experiences, lessons learned, or expertise. You can speak or type..."
-          />
+          <div className="space-y-6">
+            <VoiceInput
+              value={storyText}
+              onChange={setStoryText}
+              label="Tell Your Story"
+              placeholder="Share your life experiences, lessons learned, or expertise. You can speak or type..."
+            />
+            <VersionControl
+              userId={userId}
+              onDraftSelect={(draft) => {
+                setStoryText(draft.content);
+                setTitle(draft.title || '');
+              }}
+              onCommand={handleVoiceCommand}
+            />
+          </div>
         );
       case 2:
         return (
@@ -82,6 +202,9 @@ const CreatorWizard = ({ onComplete, onClose }: CreatorWizardProps) => {
             story={storyText}
             draft={draftContent}
             onChange={setDraftContent}
+            title={title}
+            onTitleChange={setTitle}
+            category={category}
           />
         );
       case 3:
@@ -94,7 +217,7 @@ const CreatorWizard = ({ onComplete, onClose }: CreatorWizardProps) => {
       case 4:
         return (
           <PublishForm
-            data={publishData}
+            data={{...publishData, title, category}}
             onChange={setPublishData}
             onPublish={handleComplete}
           />
@@ -149,6 +272,22 @@ const CreatorWizard = ({ onComplete, onClose }: CreatorWizardProps) => {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Current step info and save button */}
+          <div className="flex justify-between items-center mt-4">
+            <div className="text-white text-body">
+              {title && <span className="font-medium">Title: {title}</span>}
+              {category && <span className="ml-4 text-gray-300">Category: {category}</span>}
+            </div>
+            <Button
+              onClick={handleManualSave}
+              className="btn-secondary flex items-center space-x-2"
+              aria-label="Save current progress"
+            >
+              <Save size={16} />
+              <span>Save Draft</span>
+            </Button>
           </div>
         </CardHeader>
 
@@ -208,6 +347,8 @@ const CreatorWizard = ({ onComplete, onClose }: CreatorWizardProps) => {
           </div>
         </CardContent>
       </Card>
+
+      <VoiceAssistant onCommand={handleVoiceCommand} />
     </div>
   );
 };
