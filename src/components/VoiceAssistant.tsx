@@ -16,13 +16,14 @@ const VoiceAssistant = ({ onCommand, isEnabled = true }: VoiceAssistantProps) =>
   const { toast } = useToast();
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
-      const speechRecognition = new (window as any).webkitSpeechRecognition();
+    if (typeof window !== 'undefined' && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+      const SpeechRecognitionClass = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+      const speechRecognition = new SpeechRecognitionClass();
       speechRecognition.continuous = true;
       speechRecognition.interimResults = true;
       speechRecognition.lang = 'en-US';
 
-      speechRecognition.onresult = (event: SpeechRecognitionEvent) => {
+      speechRecognition.onresult = (event: any) => {
         const last = event.results.length - 1;
         const command = event.results[last][0].transcript.toLowerCase().trim();
         
@@ -31,7 +32,7 @@ const VoiceAssistant = ({ onCommand, isEnabled = true }: VoiceAssistantProps) =>
         }
       };
 
-      speechRecognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      speechRecognition.onerror = (event: any) => {
         console.error('Speech recognition error:', event.error);
         setIsListening(false);
         toast({

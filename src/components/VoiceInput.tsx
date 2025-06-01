@@ -20,13 +20,14 @@ const VoiceInput = ({ value, onChange, placeholder = "Start speaking or type you
   const { toast } = useToast();
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
-      const speechRecognition = new (window as any).webkitSpeechRecognition();
+    if (typeof window !== 'undefined' && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+      const SpeechRecognitionClass = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+      const speechRecognition = new SpeechRecognitionClass();
       speechRecognition.continuous = true;
       speechRecognition.interimResults = true;
       speechRecognition.lang = 'en-US';
 
-      speechRecognition.onresult = (event: SpeechRecognitionEvent) => {
+      speechRecognition.onresult = (event: any) => {
         let finalTranscript = '';
         let interimTranscript = '';
 
@@ -44,7 +45,7 @@ const VoiceInput = ({ value, onChange, placeholder = "Start speaking or type you
         }
       };
 
-      speechRecognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      speechRecognition.onerror = (event: any) => {
         console.error('Speech recognition error:', event.error);
         setIsRecording(false);
         toast({

@@ -18,23 +18,23 @@ export const useVoiceCommands = (onCommand?: (command: string) => void): VoiceCo
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const SpeechRecognitionClass = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       
-      if (SpeechRecognition) {
+      if (SpeechRecognitionClass) {
         setIsSupported(true);
-        const recognitionInstance = new SpeechRecognition();
+        const recognitionInstance = new SpeechRecognitionClass();
         
         recognitionInstance.continuous = true;
         recognitionInstance.interimResults = false;
         recognitionInstance.lang = 'en-US';
 
-        recognitionInstance.onresult = (event: SpeechRecognitionEvent) => {
+        recognitionInstance.onresult = (event: any) => {
           const command = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
           console.log('Voice command received:', command);
           onCommand?.(command);
         };
 
-        recognitionInstance.onerror = (event: SpeechRecognitionErrorEvent) => {
+        recognitionInstance.onerror = (event: any) => {
           console.error('Speech recognition error:', event.error);
           setIsListening(false);
           

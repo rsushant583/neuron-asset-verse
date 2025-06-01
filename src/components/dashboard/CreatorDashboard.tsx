@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useUserAIProducts } from '@/hooks/useAIProducts';
@@ -10,28 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Package, DollarSign, Zap, TrendingUp, Plus, BookOpen } from 'lucide-react';
 import CreatorWizard from '../CreatorWizard';
-import { Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-
-// Register Chart.js components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const CreatorDashboard = () => {
   const { data: products, isLoading: productsLoading, error: productsError } = useUserAIProducts();
@@ -46,51 +24,14 @@ const CreatorDashboard = () => {
   const pendingMints = mintRequests?.filter(req => req.status === 'pending').length || 0;
 
   // Chart data for earnings (last 6 months)
-  const chartData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-    datasets: [
-      {
-        label: 'Monthly Earnings (₹)',
-        data: [0, 250, 180, 320, 450, 280],
-        borderColor: '#4B8BBE',
-        backgroundColor: 'rgba(75, 139, 190, 0.1)',
-        tension: 0.4,
-        pointRadius: 6,
-        pointHoverRadius: 8,
-      },
-    ],
-  };
-
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-        labels: {
-          color: '#ffffff',
-          font: { size: 16 },
-        },
-      },
-      title: {
-        display: true,
-        text: 'Earnings Over Time',
-        color: '#ffffff',
-        font: { size: 20 },
-      },
-    },
-    scales: {
-      x: {
-        ticks: { color: '#ffffff', font: { size: 16 } },
-        grid: { color: 'rgba(255, 255, 255, 0.1)' },
-      },
-      y: {
-        ticks: { color: '#ffffff', font: { size: 16 } },
-        grid: { color: 'rgba(255, 255, 255, 0.1)' },
-        beginAtZero: true,
-        max: 500,
-      },
-    },
-  };
+  const chartData = [
+    { month: 'Jan', earnings: 0 },
+    { month: 'Feb', earnings: 250 },
+    { month: 'Mar', earnings: 180 },
+    { month: 'Apr', earnings: 320 },
+    { month: 'May', earnings: 450 },
+    { month: 'Jun', earnings: 280 },
+  ];
 
   if (productsLoading || purchasesLoading || mintsLoading) {
     return (
@@ -233,7 +174,37 @@ const CreatorDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="h-64">
-              <Line data={chartData} options={chartOptions} />
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
+                  <XAxis 
+                    dataKey="month" 
+                    tick={{ fill: '#ffffff', fontSize: 16 }}
+                    axisLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
+                  />
+                  <YAxis 
+                    tick={{ fill: '#ffffff', fontSize: 16 }}
+                    axisLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
+                    domain={[0, 500]}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'rgba(0, 0, 0, 0.8)', 
+                      border: '1px solid #4B8BBE',
+                      borderRadius: '8px',
+                      color: '#ffffff'
+                    }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="earnings" 
+                    stroke="#4B8BBE" 
+                    strokeWidth={3}
+                    dot={{ fill: '#4B8BBE', strokeWidth: 2, r: 6 }}
+                    activeDot={{ r: 8, stroke: '#4B8BBE', strokeWidth: 2 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
