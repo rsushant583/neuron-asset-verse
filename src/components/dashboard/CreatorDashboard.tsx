@@ -11,7 +11,7 @@ import { Package, DollarSign, Zap, TrendingUp } from 'lucide-react';
 
 const CreatorDashboard = () => {
   const { data: products, isLoading: productsLoading, error: productsError } = useUserAIProducts();
-  const { data: purchases, isLoading: purchasesLoading } = usePurchases();
+  const { data: purchases, isLoading: purchasesLoading } = useUserPurchases();
   const { data: mintRequests, isLoading: mintsLoading } = useUserMintRequests();
 
   // Calculate stats
