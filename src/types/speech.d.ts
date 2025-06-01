@@ -1,6 +1,6 @@
 
 // Speech Recognition API type declarations
-interface SpeechRecognition extends EventTarget {
+interface SpeechRecognitionInterface extends EventTarget {
   continuous: boolean;
   interimResults: boolean;
   lang: string;
@@ -40,7 +40,7 @@ interface SpeechRecognitionAlternative {
 }
 
 interface SpeechRecognitionConstructor {
-  new (): SpeechRecognition;
+  new (): SpeechRecognitionInterface;
 }
 
 declare global {

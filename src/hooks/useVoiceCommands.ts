@@ -13,7 +13,7 @@ interface VoiceCommandsHook {
 
 export const useVoiceCommands = (onCommand?: (command: string) => void): VoiceCommandsHook => {
   const [isListening, setIsListening] = useState(false);
-  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
+  const [recognition, setRecognition] = useState<SpeechRecognitionInterface | null>(null);
   const [isSupported, setIsSupported] = useState(false);
   const { toast } = useToast();
 

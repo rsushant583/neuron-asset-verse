@@ -12,7 +12,7 @@ interface VoiceAssistantProps {
 
 const VoiceAssistant = ({ onCommand, isEnabled = true }: VoiceAssistantProps) => {
   const [isListening, setIsListening] = useState(false);
-  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
+  const [recognition, setRecognition] = useState<SpeechRecognitionInterface | null>(null);
   const [synthesis, setSynthesis] = useState<SpeechSynthesis | null>(null);
   const { toast } = useToast();
 

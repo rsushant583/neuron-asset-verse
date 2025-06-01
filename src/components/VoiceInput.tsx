@@ -16,7 +16,7 @@ interface VoiceInputProps {
 
 const VoiceInput = ({ value, onChange, placeholder = "Start speaking or type your story...", label = "Your Story" }: VoiceInputProps) => {
   const [isRecording, setIsRecording] = useState(false);
-  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
+  const [recognition, setRecognition] = useState<SpeechRecognitionInterface | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const { toast } = useToast();
 
