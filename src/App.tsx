@@ -9,6 +9,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { useRealtimeSubscription } from "@/hooks/useRealtime";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
+import DashboardCreator from "./pages/DashboardCreator";
+import DashboardBuyer from "./pages/DashboardBuyer";
 import Explorer from "./pages/Explorer";
 import Market from "./pages/Market";
 import Create from "./pages/Create";

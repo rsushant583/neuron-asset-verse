@@ -48,6 +48,31 @@ export const useUserPurchases = () => {
   });
 };
 
+// Add the missing export that CreatorDashboard is trying to use
+export const usePurchases = () => {
+  return useQuery({
+    queryKey: ['purchases'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('purchases')
+        .select(`
+          *,
+          ai_products (
+            title,
+            preview_image,
+            users (
+              username
+            )
+          )
+        `)
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data as Purchase[];
+    }
+  });
+};
+
 export const useCreatePurchase = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();

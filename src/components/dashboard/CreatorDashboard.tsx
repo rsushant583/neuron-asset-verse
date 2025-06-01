@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useUserAIProducts } from '@/hooks/useAIProducts';
-import { usePurchases } from '@/hooks/usePurchases';
+import { useUserPurchases } from '@/hooks/usePurchases';
 import { useUserMintRequests } from '@/hooks/useNFTMinting';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
