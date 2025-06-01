@@ -15,6 +15,7 @@ const VoiceAssistant = ({ onCommand, isEnabled = true }: VoiceAssistantProps) =>
   const [isListening, setIsListening] = useState(false);
   const [recognition, setRecognition] = useState<SpeechRecognitionInterface | null>(null);
   const [synthesis, setSynthesis] = useState<SpeechSynthesis | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -177,6 +178,8 @@ const VoiceAssistant = ({ onCommand, isEnabled = true }: VoiceAssistantProps) =>
     <div className="fixed bottom-6 right-6 z-50">
       <Button
         onClick={toggleListening}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         className={`
           btn-accessible rounded-full w-20 h-20 shadow-lg transition-all duration-300
           ${isListening 
@@ -187,25 +190,27 @@ const VoiceAssistant = ({ onCommand, isEnabled = true }: VoiceAssistantProps) =>
         aria-label={isListening ? "Stop voice assistant" : "Start voice assistant"}
       >
         {isListening ? (
-          <MicOff size={32} className="text-white" />
+          <MicOff size={28} className="text-white" />
         ) : (
-          <Mic size={32} className="text-white" />
+          <Mic size={28} className="text-white" />
         )}
       </Button>
       
-      <div className="absolute bottom-24 right-0 bg-white p-4 rounded-lg shadow-lg text-sm max-w-xs">
-        <div className="flex items-center space-x-2">
-          <Volume2 size={16} className="text-blue-600" />
-          <span className="text-gray-700 text-body">
-            {isListening ? 'Listening for commands...' : 'Click to speak'}
-          </span>
-        </div>
-        {isListening && (
-          <div className="mt-2 text-xs text-gray-500">
-            Try: "Go to dashboard", "Create medical eBook", "Show drafts"
+      {(isHovered || isListening) && (
+        <div className="absolute bottom-24 right-0 bg-white p-3 rounded-lg shadow-lg text-sm max-w-xs transition-all duration-200">
+          <div className="flex items-center space-x-2">
+            <Volume2 size={14} className="text-blue-600" />
+            <span className="text-gray-700 text-sm">
+              {isListening ? 'Listening for commands...' : 'Click to speak'}
+            </span>
           </div>
-        )}
-      </div>
+          {isListening && (
+            <div className="mt-2 text-xs text-gray-500">
+              Try: "Go to dashboard", "Create medical eBook", "Show drafts"
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
