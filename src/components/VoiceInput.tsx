@@ -1,4 +1,3 @@
-
 /// <reference path="../types/speech.d.ts" />
 import React, { useState, useEffect } from 'react';
 import { Mic, MicOff, PlayCircle, PauseCircle } from 'lucide-react';
@@ -21,14 +20,14 @@ const VoiceInput = ({ value, onChange, placeholder = "Start speaking or type you
   const { toast } = useToast();
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-      const SpeechRecognitionClass = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+    if (typeof window !== 'undefined' && (window.webkitSpeechRecognition || window.SpeechRecognition)) {
+      const SpeechRecognitionClass = window.webkitSpeechRecognition || window.SpeechRecognition;
       const speechRecognition = new SpeechRecognitionClass();
       speechRecognition.continuous = true;
       speechRecognition.interimResults = true;
       speechRecognition.lang = 'en-US';
 
-      speechRecognition.onresult = (event: any) => {
+      speechRecognition.onresult = (event: SpeechRecognitionEvent) => {
         let finalTranscript = '';
         let interimTranscript = '';
 
@@ -46,7 +45,7 @@ const VoiceInput = ({ value, onChange, placeholder = "Start speaking or type you
         }
       };
 
-      speechRecognition.onerror = (event: any) => {
+      speechRecognition.onerror = (event: SpeechRecognitionErrorEvent) => {
         console.error('Speech recognition error:', event.error);
         setIsRecording(false);
         toast({

@@ -1,4 +1,3 @@
-
 /// <reference path="../types/speech.d.ts" />
 import React, { useState, useEffect } from 'react';
 import { Mic, MicOff, Volume2 } from 'lucide-react';
@@ -17,14 +16,14 @@ const VoiceAssistant = ({ onCommand, isEnabled = true }: VoiceAssistantProps) =>
   const { toast } = useToast();
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-      const SpeechRecognitionClass = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+    if (typeof window !== 'undefined' && (window.webkitSpeechRecognition || window.SpeechRecognition)) {
+      const SpeechRecognitionClass = window.webkitSpeechRecognition || window.SpeechRecognition;
       const speechRecognition = new SpeechRecognitionClass();
       speechRecognition.continuous = true;
       speechRecognition.interimResults = true;
       speechRecognition.lang = 'en-US';
 
-      speechRecognition.onresult = (event: any) => {
+      speechRecognition.onresult = (event: SpeechRecognitionEvent) => {
         const last = event.results.length - 1;
         const command = event.results[last][0].transcript.toLowerCase().trim();
         
@@ -33,7 +32,7 @@ const VoiceAssistant = ({ onCommand, isEnabled = true }: VoiceAssistantProps) =>
         }
       };
 
-      speechRecognition.onerror = (event: any) => {
+      speechRecognition.onerror = (event: SpeechRecognitionErrorEvent) => {
         console.error('Speech recognition error:', event.error);
         setIsListening(false);
         toast({
