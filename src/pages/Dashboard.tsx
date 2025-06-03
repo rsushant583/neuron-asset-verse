@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
@@ -35,25 +34,51 @@ const Dashboard = () => {
   }, []);
 
   const handleVoiceCommand = (command: string) => {
+    console.log('Dashboard handling voice command:', command);
+    
     // Handle voice commands specific to dashboard
-    if (command === 'show_drafts') {
+    if (command === 'show_drafts' || command.includes('drafts')) {
       setActiveTab('drafts');
       document.getElementById('version-control')?.scrollIntoView({ behavior: 'smooth' });
-    } else if (command.includes('create') && command.includes('medical')) {
+    } 
+    else if (command.includes('create') && command.includes('medical')) {
       navigate('/create?category=medical');
-    } else if (command.includes('create') && command.includes('ebook')) {
+    } 
+    else if (command.includes('create') && command.includes('business')) {
+      navigate('/create?category=business');
+    }
+    else if (command.includes('create') && (command.includes('ebook') || command.includes('book'))) {
       navigate('/create');
-    } else if (command.includes('go to') || command.includes('open')) {
-      // Handle navigation commands
-      if (command.includes('marketplace')) {
-        navigate('/market');
-      } else if (command.includes('upload') || command.includes('idea')) {
-        setActiveTab('upload');
-      } else if (command.includes('earnings') || command.includes('wallet')) {
-        setActiveTab('wallet');
-      } else if (command.includes('voting')) {
-        setActiveTab('voting');
-      }
+    } 
+    else if (command.includes('marketplace') || command.includes('market')) {
+      navigate('/market');
+    } 
+    else if (command.includes('upload') || command.includes('idea')) {
+      setActiveTab('upload');
+    } 
+    else if (command.includes('earnings') || command.includes('wallet')) {
+      setActiveTab('wallet');
+    } 
+    else if (command.includes('voting') || command.includes('dao')) {
+      setActiveTab('voting');
+    }
+    else if (command.includes('overview') || command.includes('home')) {
+      setActiveTab('overview');
+    }
+    else if (command.includes('settings')) {
+      setActiveTab('settings');
+    }
+    // Handle title setting commands
+    else if (command.startsWith('set_title_')) {
+      const title = command.replace('set_title_', '').replace(/_/g, ' ');
+      // This would be handled by the creation wizard
+      console.log('Setting title to:', title);
+    }
+    // Handle category setting commands
+    else if (command.startsWith('set_category_')) {
+      const category = command.replace('set_category_', '');
+      // This would be handled by the creation wizard
+      console.log('Setting category to:', category);
     }
   };
 
@@ -93,6 +118,7 @@ const Dashboard = () => {
                 // Navigate to creator wizard with the selected draft
                 navigate(`/create?draftId=${draft.id}`);
               }}
+              onCommand={handleVoiceCommand}
             />
           </div>
         );
@@ -117,6 +143,10 @@ const Dashboard = () => {
                     <input type="checkbox" defaultChecked className="form-checkbox" />
                     <span className="text-white">Voice feedback</span>
                   </label>
+                  <label className="flex items-center space-x-2">
+                    <input type="checkbox" defaultChecked className="form-checkbox" />
+                    <span className="text-white">Continuous listening</span>
+                  </label>
                 </div>
               </div>
               <div className="p-4 bg-white/5 rounded-lg">
@@ -131,6 +161,10 @@ const Dashboard = () => {
                     <input type="checkbox" className="form-checkbox" />
                     <span className="text-white">Large text mode</span>
                   </label>
+                  <label className="flex items-center space-x-2">
+                    <input type="checkbox" className="form-checkbox" />
+                    <span className="text-white">Reduce animations</span>
+                  </label>
                 </div>
               </div>
               <div className="p-4 bg-white/5 rounded-lg">
@@ -140,6 +174,10 @@ const Dashboard = () => {
                   <label className="flex items-center space-x-2">
                     <input type="checkbox" defaultChecked className="form-checkbox" />
                     <span className="text-white">Enable auto-save every 30 seconds</span>
+                  </label>
+                  <label className="flex items-center space-x-2">
+                    <input type="checkbox" className="form-checkbox" />
+                    <span className="text-white">Save to cloud automatically</span>
                   </label>
                 </div>
               </div>

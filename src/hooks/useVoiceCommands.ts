@@ -10,6 +10,7 @@ interface VoiceCommandsConfig {
   maxAlternatives?: number;
   retryAttempts?: number;
   retryDelay?: number;
+  confidenceThreshold?: number;
 }
 
 interface VoiceCommandsHook {
@@ -47,10 +48,11 @@ export const useVoiceCommands = (
   const {
     continuous = true,
     interimResults = true,
-    language = 'en-IN',
+    language = 'en-US',
     maxAlternatives = 3,
     retryAttempts = 3,
-    retryDelay = 1000
+    retryDelay = 1000,
+    confidenceThreshold = 0.6
   } = config;
 
   useEffect(() => {
@@ -69,20 +71,34 @@ export const useVoiceCommands = (
         recognitionInstance.onstart = () => {
           setIsConnected(true);
           setRetryCount(0);
-          console.log('Voice recognition started');
+          console.log('Enhanced voice recognition started');
         };
 
         recognitionInstance.onresult = (event: SpeechRecognitionEvent) => {
           const result = event.results[event.results.length - 1];
-          const command = result[0].transcript.toLowerCase().trim();
-          const commandConfidence = result[0].confidence || 0;
+          
+          // Find the best alternative based on confidence
+          let bestCommand = '';
+          let bestConfidence = 0;
+          
+          for (let i = 0; i < result.length; i++) {
+            const alternative = result[i];
+            if (alternative.confidence > bestConfidence) {
+              bestCommand = alternative.transcript;
+              bestConfidence = alternative.confidence;
+            }
+          }
+          
+          const command = bestCommand.toLowerCase().trim();
           
           setLastCommand(command);
-          setConfidence(commandConfidence);
+          setConfidence(bestConfidence);
           
-          if (result.isFinal && command) {
-            console.log('Voice command received:', command, 'Confidence:', commandConfidence);
-            onCommand?.(command, commandConfidence);
+          if (result.isFinal && command && bestConfidence >= confidenceThreshold) {
+            console.log('Voice command received:', command, 'Confidence:', bestConfidence);
+            onCommand?.(command, bestConfidence);
+          } else if (result.isFinal && command && bestConfidence < confidenceThreshold) {
+            console.log('Command below confidence threshold:', command, bestConfidence);
           }
         };
 
@@ -97,12 +113,13 @@ export const useVoiceCommands = (
           setIsListening(false);
           console.log('Voice recognition ended');
           
-          // Auto-retry on unexpected end
+          // Auto-retry on unexpected end with exponential backoff
           if (isConnected && retryCount < retryAttempts) {
+            const delay = retryDelay * Math.pow(2, retryCount);
             setTimeout(() => {
               setRetryCount(prev => prev + 1);
               startListeningInternal();
-            }, retryDelay);
+            }, delay);
           }
         };
 
@@ -112,7 +129,7 @@ export const useVoiceCommands = (
         console.warn('Speech recognition not supported in this browser');
       }
     }
-  }, [onCommand, continuous, interimResults, language, maxAlternatives, retryAttempts, retryDelay]);
+  }, [onCommand, continuous, interimResults, language, maxAlternatives, retryAttempts, retryDelay, confidenceThreshold]);
 
   const handleError = useCallback((error: string) => {
     const errorMessages = {
