@@ -1,4 +1,3 @@
-
 /// <reference path="../types/speech.d.ts" />
 import React, { useState, useEffect, useCallback } from 'react';
 import { Mic, MicOff, Volume2, Wifi, WifiOff } from 'lucide-react';
