@@ -10,6 +10,7 @@ const router = express.Router();
 router.get(
   '/:userId',
   [
+    authMiddleware,
     param('userId').isString().notEmpty().withMessage('User ID is required'),
     validateRequest
   ],

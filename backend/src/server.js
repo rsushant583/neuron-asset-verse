@@ -21,7 +21,7 @@ import voiceRoutes from './routes/voice.js';
 import webhookRoutes from './routes/webhooks.js';
 
 // Import middleware
-import { errorHandler } from './middleware/errorHandler.js';
+import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { authMiddleware } from './middleware/auth.js';
 import { logger } from './utils/logger.js';
 import { initializeDatabase } from './database/connection.js';
@@ -113,20 +113,21 @@ app.use('/api/webhooks', webhookRoutes);
 app.use(errorHandler);
 
 // 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({
-    error: 'Route not found',
-    path: req.originalUrl,
-    method: req.method
-  });
-});
+app.use('*', notFoundHandler);
 
 // Initialize services
 async function initializeServices() {
   try {
     await initializeDatabase();
-    await initializeRedis();
-    await initializeQueues();
+    
+    // Only initialize Redis if configured
+    if (process.env.REDIS_HOST) {
+      await initializeRedis();
+      await initializeQueues();
+    } else {
+      logger.warn('Redis not configured, skipping Redis initialization');
+    }
+    
     initializeSocketIO(io);
     
     logger.info('All services initialized successfully');

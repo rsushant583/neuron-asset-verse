@@ -49,8 +49,25 @@ export const handleSupabaseError = (error) => {
   }
 };
 
+// Helper function to run SQL directly
+export const runSQL = async (sql, params = {}) => {
+  try {
+    const { data, error } = await supabase.rpc('run_sql', {
+      sql,
+      params
+    });
+    
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    logger.error('Error running SQL:', error);
+    throw error;
+  }
+};
+
 export default {
   supabase,
   testConnection,
-  handleSupabaseError
+  handleSupabaseError,
+  runSQL
 };

@@ -46,6 +46,12 @@ const fileFormat = winston.format.combine(
   winston.format.json(),
 );
 
+// Create logs directory if it doesn't exist
+const fs = winston.transports.File.prototype.dirname = './logs';
+if (!fs.existsSync) {
+  fs.mkdirSync(fs, { recursive: true });
+}
+
 // Define transports
 const transports = [
   // Console transport

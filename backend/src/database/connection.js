@@ -21,6 +21,9 @@ export const initializeDatabase = async () => {
     
     logger.info('Successfully connected to Supabase');
     
+    // Run migrations if needed
+    await runMigrations();
+    
     return true;
   } catch (error) {
     logger.error('Database initialization error:', error);
@@ -33,13 +36,46 @@ export const initializeDatabase = async () => {
  */
 export const runMigrations = async () => {
   try {
-    logger.info('Running database migrations...');
+    logger.info('Checking for database migrations...');
     
     // Get migration files
-    const migrationsDir = path.join(__dirname, 'migrations');
+    const migrationsDir = path.join(__dirname, '../../supabase/migrations');
+    
+    // Check if migrations directory exists
+    if (!fs.existsSync(migrationsDir)) {
+      logger.info('No migrations directory found, skipping migrations');
+      return true;
+    }
+    
     const migrationFiles = fs.readdirSync(migrationsDir)
       .filter(file => file.endsWith('.sql'))
       .sort();
+    
+    if (migrationFiles.length === 0) {
+      logger.info('No migration files found, skipping migrations');
+      return true;
+    }
+    
+    // Check if migrations table exists
+    const { data: migrationTableExists, error: tableCheckError } = await supabase.rpc(
+      'check_table_exists',
+      { table_name: 'migrations' }
+    );
+    
+    if (tableCheckError) {
+      // Create migrations table if it doesn't exist
+      logger.info('Creating migrations table...');
+      
+      await supabase.rpc('run_sql', {
+        sql: `
+          CREATE TABLE IF NOT EXISTS migrations (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(255) NOT NULL UNIQUE,
+            applied_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+          );
+        `
+      });
+    }
     
     // Get applied migrations
     const { data: appliedMigrations, error } = await supabase
@@ -47,15 +83,8 @@ export const runMigrations = async () => {
       .select('name')
       .order('applied_at', { ascending: true });
     
-    if (error) {
-      // If migrations table doesn't exist, create it
-      if (error.code === '42P01') {
-        logger.info('Creating migrations table...');
-        
-        await supabase.rpc('create_migrations_table');
-      } else {
-        throw error;
-      }
+    if (error && error.code !== 'PGRST116') {
+      throw error;
     }
     
     const appliedMigrationNames = appliedMigrations?.map(m => m.name) || [];

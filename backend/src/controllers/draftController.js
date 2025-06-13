@@ -1,8 +1,8 @@
 import { supabase } from '../services/supabase.js';
-import { generateTitleSuggestions } from '../services/ai.js';
-import { analyzeContentStructure } from '../services/ai.js';
+import { generateTitleSuggestions, analyzeContentStructure } from '../services/ai.js';
 import { logger } from '../utils/logger.js';
 import { v4 as uuidv4 } from 'uuid';
+import { NotFoundError, ForbiddenError } from '../middleware/errorHandler.js';
 
 /**
  * Get all drafts for a user
@@ -12,10 +12,8 @@ export const getDrafts = async (req, res, next) => {
     const { userId } = req.params;
     
     // Verify user has access to these drafts
-    if (req.user.id !== userId && !req.user.isAdmin) {
-      return res.status(403).json({
-        error: 'Unauthorized access to drafts'
-      });
+    if (req.user.id !== userId && req.user.role !== 'admin') {
+      throw new ForbiddenError('You do not have permission to access these drafts');
     }
 
     const { data, error } = await supabase
@@ -41,10 +39,8 @@ export const saveDraft = async (req, res, next) => {
     const { userId, content, title, chapters, word_count } = req.body;
     
     // Verify user has access to save drafts
-    if (req.user.id !== userId && !req.user.isAdmin) {
-      return res.status(403).json({
-        error: 'Unauthorized access to save drafts'
-      });
+    if (req.user.id !== userId && req.user.role !== 'admin') {
+      throw new ForbiddenError('You do not have permission to save drafts for this user');
     }
 
     // Get next version number for user
@@ -105,16 +101,14 @@ export const deleteDraft = async (req, res, next) => {
     
     if (fetchError) {
       if (fetchError.code === 'PGRST116') {
-        return res.status(404).json({ error: 'Draft not found' });
+        throw new NotFoundError(`Draft with ID ${draftId} not found`);
       }
       throw fetchError;
     }
     
     // Verify user has access to delete this draft
-    if (draft.user_id !== req.user.id && !req.user.isAdmin) {
-      return res.status(403).json({
-        error: 'Unauthorized access to delete draft'
-      });
+    if (draft.user_id !== req.user.id && req.user.role !== 'admin') {
+      throw new ForbiddenError('You do not have permission to delete this draft');
     }
     
     // Delete the draft
