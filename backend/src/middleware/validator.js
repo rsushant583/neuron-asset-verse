@@ -1,4 +1,5 @@
 import { validationResult } from 'express-validator';
+import { ValidationError } from './errorHandler.js';
 import { logger } from '../utils/logger.js';
 
 /**
@@ -10,13 +11,10 @@ export const validateRequest = (req, res, next) => {
   if (!errors.isEmpty()) {
     logger.warn('Validation error:', errors.array());
     
-    return res.status(400).json({
-      error: 'Validation failed',
-      details: errors.array().map(error => ({
-        field: error.path,
-        message: error.msg
-      }))
-    });
+    throw new ValidationError('Validation failed', errors.array().map(error => ({
+      field: error.path,
+      message: error.msg
+    })));
   }
   
   next();

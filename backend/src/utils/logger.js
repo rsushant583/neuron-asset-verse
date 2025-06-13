@@ -1,7 +1,13 @@
 import winston from 'winston';
 import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Define log levels
 const levels = {
@@ -47,9 +53,9 @@ const fileFormat = winston.format.combine(
 );
 
 // Create logs directory if it doesn't exist
-const fs = winston.transports.File.prototype.dirname = './logs';
-if (!fs.existsSync) {
-  fs.mkdirSync(fs, { recursive: true });
+const logsDir = path.join(process.cwd(), 'logs');
+if (!fs.existsSync(logsDir)) {
+  fs.mkdirSync(logsDir, { recursive: true });
 }
 
 // Define transports
@@ -60,13 +66,13 @@ const transports = [
   }),
   // Error log file transport
   new winston.transports.File({
-    filename: 'logs/error.log',
+    filename: path.join(logsDir, 'error.log'),
     level: 'error',
     format: fileFormat,
   }),
   // Combined log file transport
   new winston.transports.File({
-    filename: 'logs/combined.log',
+    filename: path.join(logsDir, 'combined.log'),
     format: fileFormat,
   }),
 ];
@@ -85,5 +91,10 @@ export const stream = {
     logger.http(message.trim());
   },
 };
+
+// Helper function to get dirname in ES modules
+function dirname(path) {
+  return new URL('.', path).pathname;
+}
 
 export default logger;
