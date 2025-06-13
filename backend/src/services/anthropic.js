@@ -1,4 +1,4 @@
-import Anthropic from 'anthropic';
+import Anthropic from '@anthropic-ai/sdk';
 import dotenv from 'dotenv';
 import { logger } from '../utils/logger.js';
 
