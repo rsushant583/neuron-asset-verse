@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Purchase Confirmation - MetaMind</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      text-align: center;
+      padding: 20px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .logo {
+      max-width: 150px;
+      margin-bottom: 20px;
+    }
+    .content {
+      padding: 30px 20px;
+    }
+    .button {
+      display: inline-block;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #00d4ff, #7c3aed);
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: bold;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 12px;
+      color: #999;
+      border-top: 1px solid #eee;
+    }
+    .product-info {
+      background-color: #f5f9ff;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    .product-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .price {
+      font-size: 24px;
+      font-weight: bold;
+      color: #00d4ff;
+    }
+    @media only screen and (max-width: 600px) {
+      .container {
+        width: 100%;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="https://metamind.app/logo.png" alt="MetaMind Logo" class="logo">
+      <h1>Purchase Confirmation</h1>
+    </div>
+    <div class="content">
+      <p>Hello {{username}},</p>
+      <p>Thank you for your purchase! Your transaction has been completed successfully.</p>
+      
+      <div class="product-info">
+        <div class="product-title">{{productTitle}}</div>
+        <p>Order ID: {{orderId}}</p>
+        <p>Purchase Date: {{purchaseDate}}</p>
+        <p class="price">${{price}}</p>
+      </div>
+      
+      <p>You can access your purchase immediately in your dashboard:</p>
+      <p style="text-align: center;">
+        <a href="{{dashboardUrl}}" class="button">Go to My Purchases</a>
+      </p>
+      
+      <p>If you have any questions about your purchase, please contact our support team.</p>
+    </div>
+    <div class="footer">
+      <p>&copy; 2025 MetaMind. All rights reserved.</p>
+      <p>MetaMind - Transform your thoughts into digital assets</p>
+    </div>
+  </div>
+</body>
+</html>
