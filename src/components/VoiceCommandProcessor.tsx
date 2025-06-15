@@ -197,7 +197,7 @@ const VoiceCommandProcessor = ({ command, context, onResult }: VoiceCommandProce
         const helpText = `I'm your MetaMind assistant. I can help you:
         - Sign in or out: "Sign in with email", "Log out"
         - Navigate: "Go to dashboard", "Open marketplace", "Create eBook"
-        - Create content: "Create medical eBook", "Set title to my story"
+        - Create content: "Create medical eBook", "Set title to My Medical Journey"
         - Get suggestions: "Suggest a title about medical experience"
         - Manage drafts: "Save draft", "Show drafts", "Open draft version 2"
         - Control creation: "Next step", "Previous step", "Submit eBook"
