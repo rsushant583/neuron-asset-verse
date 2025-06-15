@@ -1,9 +1,8 @@
-
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { checkTitle, suggestTitle, saveDraft } from '@/lib/api';
+import { checkTitle, suggestTitles, saveDraft } from '@/lib/api';
 
 interface VoiceCommandProcessorProps {
   command: string;
@@ -136,10 +135,10 @@ const VoiceCommandProcessor = ({ command, context, onResult }: VoiceCommandProce
         
         try {
           speak('Generating unique title suggestion');
-          const suggestion = await suggestTitle(topic);
-          if (suggestion.title) {
-            speak(`I suggest: ${suggestion.title}`);
-            onResult?.({ action: 'suggest_title', title: suggestion.title });
+          const suggestions = await suggestTitles(topic);
+          if (suggestions && suggestions.length > 0) {
+            speak(`I suggest: ${suggestions[0]}`);
+            onResult?.({ action: 'suggest_title', title: suggestions[0] });
           } else {
             speak('Unable to generate title suggestion at the moment');
           }
